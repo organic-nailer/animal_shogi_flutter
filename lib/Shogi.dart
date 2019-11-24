@@ -220,6 +220,15 @@ class _PlayPageState extends State<PlayPage> {
                             enemyCapturedPiece.add(arrangement[row][column].replaceAll("ally", "enemy").replaceAll("chicken", "chick"));
                         }
 
+                        if(_selected.title == "lion_ally" && row == 0) {
+                          if(judgeNyugyoku(true, column))
+                            showResult(true, context);
+                        }
+                        else if(_selected.title == "lion_enemy" && row == 3) {
+                          if(judgeNyugyoku(false, column))
+                            showResult(false, context);
+                        }
+
                         //移動元の削除
                         if(_selected.isAllyCapturedPiece == true) {
                           allyCapturedPiece.remove(_selected.title);
@@ -379,6 +388,29 @@ class _PlayPageState extends State<PlayPage> {
           ],
         )
     );
+  }
+
+  bool judgeNyugyoku(bool isAlly, int column) {
+    if(isAlly) {
+      return !checkIsPiece(0, column - 1, ["lion_enemy", "kirin_enemy"])
+          && !checkIsPiece(0, column + 1, ["lion_enemy", "kirin_enemy"])
+          && !checkIsPiece(1, column, ["lion_enemy", "kirin_enemy"])
+          && !checkIsPiece(1, column - 1, ["lion_enemy", "elephant_enemy"])
+          && !checkIsPiece(1, column + 1, ["lion_enemy", "elephant_enemy"]);
+    }
+    else {
+      return !checkIsPiece(3, column - 1, ["lion_ally", "kirin_ally"])
+          && !checkIsPiece(3, column + 1, ["lion_ally", "kirin_ally"])
+          && !checkIsPiece(2, column, ["lion_ally", "kirin_ally"])
+          && !checkIsPiece(2, column - 1, ["lion_ally", "elephant_ally"])
+          && !checkIsPiece(2, column + 1, ["lion_ally", "elephant_ally"]);
+    }
+  }
+
+  bool checkIsPiece(int row, int column, List<String> titles) {
+    if(row < 0 || row > 3 || column < 0 || column > 2) return false;
+
+    return titles.any((t) => t == arrangement[row][column]);
   }
 }
 
